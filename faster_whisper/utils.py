@@ -5,7 +5,7 @@ import re
 from typing import List, Optional, Union
 
 import huggingface_hub
-import requests
+# import requests
 
 from tqdm.auto import tqdm
 
