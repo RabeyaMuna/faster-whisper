@@ -1123,6 +1123,7 @@ class AsyncBatchedInferencePipeline:
             pbar.close()
             self.last_speech_timestamp = 0.0
 
+
 class WhisperModel:
     def __init__(
         self,
@@ -2301,9 +2302,9 @@ class WhisperModel:
             languege_probability: Probability of the detected language.
             all_language_probs: List of tuples with all language names and probabilities.
         """
-        assert (
-            audio is not None or features is not None
-        ), "Either `audio` or `features` must be provided."
+        assert audio is not None or features is not None, (
+            "Either `audio` or `features` must be provided."
+        )
 
         if audio is not None:
             if vad_filter:
