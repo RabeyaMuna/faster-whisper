@@ -3,7 +3,9 @@ import os
 
 import numpy as np
 
-from faster_whisper import BatchedInferencePipeline, WhisperModel, decode_audio
+# Defer importing faster_whisper until inside each test to avoid import-time
+# execution that may require optional dependencies (e.g., 'requests') during
+# test collection. Individual tests should perform: `from faster_whisper import ...`.
 
 
 def test_supported_languages():

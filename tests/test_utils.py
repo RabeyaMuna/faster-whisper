@@ -1,6 +1,27 @@
 import os
 
-from faster_whisper import available_models, download_model
+
+def _lazy_import():
+    global available_models, download_model
+    from faster_whisper import available_models as __am
+    from faster_whisper import download_model as __dm
+
+    available_models = __am
+    download_model = __dm
+
+
+def _available_models_proxy(*args, **kwargs):
+    _lazy_import()
+    return available_models(*args, **kwargs)
+
+
+def _download_model_proxy(*args, **kwargs):
+    _lazy_import()
+    return download_model(*args, **kwargs)
+
+
+available_models = _available_models_proxy
+download_model = _download_model_proxy
 
 
 def test_available_models():

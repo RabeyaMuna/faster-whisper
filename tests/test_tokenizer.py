@@ -1,6 +1,29 @@
-from faster_whisper import WhisperModel
-from faster_whisper.tokenizer import Tokenizer
-from faster_whisper.transcribe import get_suppressed_tokens
+import importlib
+
+
+class _LazyObj:
+    def __init__(self, module_name, attr_name):
+        self.module_name = module_name
+        self.attr_name = attr_name
+        self._obj = None
+
+    def _load(self):
+        if self._obj is None:
+            mod = importlib.import_module(self.module_name)
+            self._obj = getattr(mod, self.attr_name)
+
+    def __call__(self, *args, **kwargs):
+        self._load()
+        return self._obj(*args, **kwargs)
+
+    def __getattr__(self, item):
+        self._load()
+        return getattr(self._obj, item)
+
+
+WhisperModel = _LazyObj("faster_whisper", "WhisperModel")
+Tokenizer = _LazyObj("faster_whisper.tokenizer", "Tokenizer")
+get_suppressed_tokens = _LazyObj("faster_whisper.transcribe", "get_suppressed_tokens")
 
 
 def test_suppressed_tokens_minus_1():

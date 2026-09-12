@@ -3,7 +3,6 @@ import json
 import logging
 import os
 import zlib
-
 from dataclasses import asdict, dataclass
 from inspect import signature
 from math import ceil
@@ -13,13 +12,41 @@ from warnings import warn
 import ctranslate2
 import numpy as np
 import tokenizers
-
 from tqdm import tqdm
 
 from faster_whisper.audio import decode_audio, pad_or_trim
 from faster_whisper.feature_extractor import FeatureExtractor
 from faster_whisper.tokenizer import _LANGUAGE_CODES, Tokenizer
-from faster_whisper.utils import download_model, format_timestamp, get_end, get_logger
+
+# Do not import faster_whisper.utils at module import time because it may import optional
+# dependencies (e.g., requests) that are not required for all use cases. Use lazy wrappers
+# that import the utils module only when the functions are actually called.
+
+
+def download_model(*args, **kwargs):
+    from faster_whisper.utils import download_model as _download_model
+
+    return _download_model(*args, **kwargs)
+
+
+def format_timestamp(*args, **kwargs):
+    from faster_whisper.utils import format_timestamp as _format_timestamp
+
+    return _format_timestamp(*args, **kwargs)
+
+
+def get_end(*args, **kwargs):
+    from faster_whisper.utils import get_end as _get_end
+
+    return _get_end(*args, **kwargs)
+
+
+def get_logger(*args, **kwargs):
+    from faster_whisper.utils import get_logger as _get_logger
+
+    return _get_logger(*args, **kwargs)
+
+
 from faster_whisper.vad import (
     SpeechTimestampsMap,
     VadOptions,
