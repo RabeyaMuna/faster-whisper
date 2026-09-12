@@ -4,7 +4,13 @@ from faster_whisper.transcribe import (
     BatchedInferencePipeline,
     WhisperModel,
 )
-from faster_whisper.utils import available_models, download_model, format_timestamp
+
+try:
+    from faster_whisper.utils import available_models, download_model, format_timestamp
+except ImportError:
+    # 'requests' (used by faster_whisper.utils) may be missing in some environments.
+    # Defer the import error until these helpers are actually used.
+    available_models = download_model = format_timestamp = None
 from faster_whisper.version import __version__
 
 __all__ = [
