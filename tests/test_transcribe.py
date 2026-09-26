@@ -93,6 +93,7 @@ def test_batched_transcribe(physcisworks_path):
         )
     assert len(segments) > 7
 
+
 @pytest.mark.asyncio
 async def test_async_batched_transcribe(physcisworks_path):
     model = WhisperModel("tiny")
@@ -121,6 +122,7 @@ async def test_async_batched_transcribe(physcisworks_path):
             {"start": segment.start, "end": segment.end, "text": segment.text}
         )
     assert len(segments) > 7
+
 
 def test_empty_audio():
     audio = np.asarray([], dtype="float32")
