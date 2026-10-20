@@ -1,4 +1,8 @@
 import os
+import sys
+
+# Mock requests module before importing faster_whisper to avoid dependency error in tests
+sys.modules["requests"] = type(sys)("requests")
 
 from faster_whisper import available_models, download_model
 
