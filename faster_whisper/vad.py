@@ -320,7 +320,8 @@ class SileroVADModel:
             audio.ndim == 2
         ), "Input should be a 2D array with size (batch_size, num_samples)"
 
-        rhs_padding = window_size_samples - num_samples % window_size_samples
+        batch_size, num_samples_original = audio.shape
+        rhs_padding = window_size_samples - num_samples_original % window_size_samples
         audio = np.pad(audio, ((0, 0), (context_size_samples, rhs_padding)))
         batch_size, num_samples = audio.shape
 
