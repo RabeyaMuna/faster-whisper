@@ -343,5 +343,8 @@ class SileroVADModel:
             output, h, c = self.session.run(None, {"input": batch, "h": h, "c": c})
             outputs.append(output)
 
+        if len(outputs) == 0:
+            return np.empty((batch_size, 0), dtype=np.float32)
+
         out = np.concatenate(outputs, axis=0).T
         return out
