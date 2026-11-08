@@ -1065,9 +1065,16 @@ class AsyncBatchedInferencePipeline:
             options,
             log_progress,
         )
-        segments = restore_speech_timestamps(segments, clip_timestamps, sampling_rate)
 
-        return segments, info
+        async def async_segments_with_timestamps():
+            async for segment in segments:
+                yield segment
+
+        segments_with_timestamps = self._restore_speech_timestamps_async(
+            async_segments_with_timestamps(), clip_timestamps, sampling_rate
+        )
+
+        return segments_with_timestamps, info
 
     async def _batched_segments_generator(
         self, features, tokenizer, chunks_metadata, batch_size, options, log_progress
@@ -1122,6 +1129,45 @@ class AsyncBatchedInferencePipeline:
         finally:
             pbar.close()
             self.last_speech_timestamp = 0.0
+
+    async def _restore_speech_timestamps_async(
+        self,
+        segments,
+        speech_chunks: List[dict],
+        sampling_rate: int,
+    ):
+        """
+        Asynchronous generator that restores speech timestamps from an async segments generator.
+
+        Args:
+            segments: Async generator of Segment objects.
+            speech_chunks: List of speech chunk dictionaries.
+            sampling_rate: Sampling rate of the audio.
+
+        Yields:
+            Segment: Segment objects with restored timestamps.
+        """
+        ts_map = SpeechTimestampsMap(speech_chunks, sampling_rate)
+
+        async for segment in segments:
+            if segment.words:
+                words = []
+                for word in segment.words:
+                    middle = (word.start + word.end) / 2
+                    chunk_index = ts_map.get_chunk_index(middle)
+                    word.start = ts_map.get_original_time(word.start, chunk_index)
+                    word.end = ts_map.get_original_time(word.end, chunk_index)
+                    words.append(word)
+
+                segment.start = words[0].start
+                segment.end = words[-1].end
+                segment.words = words
+            else:
+                segment.start = ts_map.get_original_time(segment.start)
+                segment.end = ts_map.get_original_time(segment.end, is_end=True)
+
+            yield segment
+
 
 class WhisperModel:
     def __init__(
