@@ -1123,6 +1123,7 @@ class AsyncBatchedInferencePipeline:
             pbar.close()
             self.last_speech_timestamp = 0.0
 
+
 class WhisperModel:
     def __init__(
         self,
