@@ -31,6 +31,7 @@ from faster_whisper.vad import (
 )
 
 
+
 @dataclass
 class Word:
     start: float
@@ -604,6 +605,7 @@ class BatchedInferencePipeline:
 
         pbar.close()
         self.last_speech_timestamp = 0.0
+
 
 
 class AsyncBatchedInferencePipeline:
