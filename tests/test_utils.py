@@ -1,4 +1,5 @@
 import os
+import requests
 
 from faster_whisper import available_models, download_model
 

@@ -2,6 +2,7 @@ import inspect
 import os
 
 import numpy as np
+import requests
 
 from faster_whisper import BatchedInferencePipeline, WhisperModel, decode_audio
 

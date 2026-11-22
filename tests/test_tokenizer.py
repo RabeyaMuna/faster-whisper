@@ -1,6 +1,7 @@
 from faster_whisper import WhisperModel
 from faster_whisper.tokenizer import Tokenizer
 from faster_whisper.transcribe import get_suppressed_tokens
+import requests
 
 
 def test_suppressed_tokens_minus_1():
